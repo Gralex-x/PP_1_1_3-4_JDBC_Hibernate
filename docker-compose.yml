@@ -1,0 +1,12 @@
+version: '3.7'
+
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_DATABASE: 'mysql'
+      MYSQL_ROOT_PASSWORD: '12345678'
+    ports:
+      - "3306:3306"
