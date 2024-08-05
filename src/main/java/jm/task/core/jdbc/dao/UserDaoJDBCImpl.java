@@ -20,8 +20,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
 
-        String sqlRequest =
-                "CREATE TABLE IF NOT EXISTS User (" +
+        String sqlRequest = "CREATE TABLE IF NOT EXISTS User (" +
                 "    id BIGINT PRIMARY KEY AUTO_INCREMENT," +
                 "    name VARCHAR(255)," +
                 "    lastName VARCHAR(255)," +
