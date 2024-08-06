@@ -37,6 +37,9 @@ public class Util {
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
 
+    private Util() {
+    }
+
     public static Session getSession() {
         return sessionFactory.getCurrentSession();
     }
@@ -74,11 +77,11 @@ public class Util {
                     USERNAME,
                     PASSWORD
             );
+            connection.setAutoCommit(false);
+            return connection;
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return connection;
     }
 
     public static void closeConnection() {
@@ -87,7 +90,8 @@ public class Util {
                 connection.close();
                 connection = null;
             }
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) {
+        }
     }
 
 }
