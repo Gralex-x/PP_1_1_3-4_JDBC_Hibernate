@@ -14,6 +14,22 @@ import java.util.Properties;
 public class Util {
     // реализуйте настройку соеденения с БД
 
+    private static final String HOSTNAME = "localhost";
+
+    private static final String PORT = "3306";
+
+    private static final String DATABASE = "mysql";
+
+    private static final String USERNAME = "root";
+
+    private static final String PASSWORD = "12345678";
+
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+
+    private static final String CONNECTION_URL = "jdbc:mysql://" + HOSTNAME + ":" + PORT + "/" + DATABASE;
+
+    private static final String MYSQL_DIALECT = "org.hibernate.dialect.MySQLDialect";
+
     private static Connection connection;
 
     private static final SessionFactory sessionFactory = new Configuration()
@@ -31,12 +47,12 @@ public class Util {
 
     private static Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/mysql?useSSL=false&serverTimezone=UTC");
-        properties.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-        properties.setProperty("hibernate.connection.username", "root");
-        properties.setProperty("hibernate.connection.password", "12345678");
+        properties.setProperty("hibernate.connection.url", CONNECTION_URL + "?useSSL=false&serverTimezone=UTC");
+        properties.setProperty("hibernate.connection.driver_class", DRIVER);
+        properties.setProperty("hibernate.connection.username", USERNAME);
+        properties.setProperty("hibernate.connection.password", PASSWORD);
         properties.setProperty("hibernate.current_session_context_class", "thread");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.setProperty("hibernate.dialect", MYSQL_DIALECT);
         properties.setProperty("hibernate.hbm2ddl.auto", "none");
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.format_sql", "true");
@@ -51,37 +67,27 @@ public class Util {
             return connection;
         }
 
-        String hostName = "localhost";
-
-        String dbName = "mysql";
-        String userName = "root";
-        String password = "12345678";
-
-        return getConnection(hostName, dbName, userName, password);
-    }
-
-    private static Connection getConnection(String hostName, String dbName,
-                                            String userName, String password) {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName;
+            Class.forName(DRIVER);
             connection = DriverManager.getConnection(
-                    connectionURL,
-                    userName,
-                    password
+                    CONNECTION_URL,
+                    USERNAME,
+                    PASSWORD
             );
-        } catch (Exception e) {
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
 
         return connection;
     }
 
-    public static void closeConnection() throws SQLException {
-        if (connection != null) {
-            connection.close();
-            connection = null;
-        }
+    public static void closeConnection() {
+        try {
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException ignored) {}
     }
 
 }
